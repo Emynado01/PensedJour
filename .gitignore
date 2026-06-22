@@ -5,4 +5,4 @@ dist
 .env*.local
 .env
 *.tsbuildinfo
-
+.next-start.*.log
