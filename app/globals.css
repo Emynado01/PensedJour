@@ -252,6 +252,16 @@ button {
     0 8px 24px rgba(22, 36, 31, 0.14);
 }
 
+.inspiration-label {
+  margin: 9px 0 0;
+  color: rgba(47, 63, 56, 0.72);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.36);
+}
+
 .error-message {
   margin: 16px auto 0;
   color: var(--error);
@@ -386,6 +396,13 @@ button {
   text-transform: uppercase;
 }
 
+.riddle-source {
+  margin: -3px 0 12px;
+  color: rgba(49, 92, 77, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .question-modal h2 {
   margin: 0;
   padding-right: 32px;
@@ -494,6 +511,18 @@ button {
 
 .answer-result h2 {
   padding-right: 0;
+}
+
+.question-recap {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: rgba(23, 40, 34, 0.68);
+  font-size: 0.9rem;
+  font-weight: 720;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .result-icon {

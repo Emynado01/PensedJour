@@ -6,6 +6,7 @@ type DailyQuote = {
   quote: string;
   author: string;
   reflection: string;
+  inspiration: string;
   date: string;
   source: "openai" | "fallback";
 };
@@ -19,10 +20,11 @@ type StoredAnswer = {
 };
 
 const fallbackQuote: DailyQuote = {
-  quote: "Le jour devient plus vaste quand on consent a l'habiter pleinement.",
+  quote: "On avance mieux quand le tresor cherche devient une facon de regarder.",
   author: "KIMIA",
+  inspiration: "Inspiré de l'Alchimiste",
   reflection:
-    "Reviens au geste simple, a la respiration, a ce que tu peux clarifier maintenant.",
+    "Reste attentif au chemin: il sait parfois parler avant l'arrivee.",
   date: new Date().toISOString().slice(0, 10),
   source: "fallback"
 };
@@ -30,33 +32,75 @@ const fallbackQuote: DailyQuote = {
 const riddleBank = [
   {
     question:
-      "Je travaille toute la journee sans jamais prendre de pause, mais si on m'oublie, tout le monde ralentit. Qui suis-je ?",
-    answer: "La bonne organisation."
+      "Dans Le Seigneur des anneaux, je suis minuscule, je brille, et je transforme tout le monde en mauvais collegue. Qui suis-je ?",
+    answer: "L'anneau",
+    inspiration: "Le Seigneur des anneaux"
   },
   {
     question:
-      "Je suis petit, je ne parle pas, mais je peux eviter une grosse erreur avant midi. Qui suis-je ?",
-    answer: "Le controle avant de commencer."
+      "Dans Matrix, je suis rouge ou bleue, mais je ne soigne aucun rhume. Je change juste ta facon de voir le monde. Qui suis-je ?",
+    answer: "La pilule",
+    inspiration: "Matrix"
   },
   {
     question:
-      "Plus on me partage, plus l'equipe avance vite. Pourtant je ne pese rien. Qui suis-je ?",
-    answer: "Une bonne information."
+      "Dans Harry Potter, je ne suis pas un plan RH, mais je choisis ta maison et parfois ton ego. Qui suis-je ?",
+    answer: "Le Choixpeau",
+    inspiration: "Harry Potter"
   },
   {
     question:
-      "Je fais sourire les collegues sans arreter la production. Je coute zero euro et je change l'ambiance. Qui suis-je ?",
-    answer: "Un bonjour sincere."
+      "Dans Star Wars, je suis partout, mais impossible de me mettre en bouteille pour la pause cafe. Qui suis-je ?",
+    answer: "La Force",
+    inspiration: "Star Wars"
   },
   {
     question:
-      "Je suis souvent cachee dans un probleme. Quand on me trouve, tout devient plus simple. Qui suis-je ?",
-    answer: "La vraie cause."
+      "Dans Le Roi Lion, je veux dire: respire, avance, et arrete de ruminer comme si c'etait un metier. Qui suis-je ?",
+    answer: "Hakuna Matata",
+    inspiration: "Le Roi Lion"
   },
   {
     question:
-      "Je suis la seule chose qui grandit quand on la donne aux autres au bon moment. Qui suis-je ?",
-    answer: "La confiance."
+      "Dans Inside Out, je prouve qu'une larme peut parfois faire mieux qu'un grand sourire force. Qui suis-je ?",
+    answer: "La tristesse",
+    inspiration: "Inside Out"
+  },
+  {
+    question:
+      "Dans Ted Lasso, je ressemble a un mot simple sur un panneau, mais je fais courir l'espoir plus vite qu'un coach. Qui suis-je ?",
+    answer: "Believe",
+    inspiration: "Ted Lasso"
+  },
+  {
+    question:
+      "Dans Toy Story, je suis une mission immense, meme quand on part d'une chambre d'enfant. Qui suis-je ?",
+    answer: "Vers l'infini et au-dela",
+    inspiration: "Toy Story"
+  },
+  {
+    question:
+      "Chez Socrate, je commence souvent par dire 'je ne sais pas', ce qui est pratique quand on n'a pas revise. Qui suis-je ?",
+    answer: "La sagesse",
+    inspiration: "Socrate"
+  },
+  {
+    question:
+      "Dans la culture japonaise, je repare les fissures avec de l'or au lieu de faire semblant qu'elles n'existent pas. Qui suis-je ?",
+    answer: "Le kintsugi",
+    inspiration: "Culture japonaise"
+  },
+  {
+    question:
+      "Avec Nelson Mandela, je demande du temps, du calme et une tete dure, mais je finis par ouvrir les portes. Qui suis-je ?",
+    answer: "La perseverance",
+    inspiration: "Nelson Mandela"
+  },
+  {
+    question:
+      "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma reponse. Qui suis-je ?",
+    answer: "Le jugement",
+    inspiration: "Stoicisme"
   }
 ];
 
@@ -94,6 +138,40 @@ function normalizeText(value: string) {
     .trim();
 }
 
+function wordSet(value: string) {
+  return new Set(normalizeText(value).split(" ").filter((word) => word.length > 2));
+}
+
+function levenshteinDistance(left: string, right: string) {
+  const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let lastDiagonal = previous[0];
+    previous[0] = leftIndex;
+
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const insertion = previous[rightIndex] + 1;
+      const deletion = previous[rightIndex - 1] + 1;
+      const substitution = lastDiagonal + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1);
+
+      lastDiagonal = previous[rightIndex];
+      previous[rightIndex] = Math.min(insertion, deletion, substitution);
+    }
+  }
+
+  return previous[right.length];
+}
+
+function similarity(left: string, right: string) {
+  const longest = Math.max(left.length, right.length);
+
+  if (longest === 0) {
+    return 1;
+  }
+
+  return 1 - levenshteinDistance(left, right) / longest;
+}
+
 function isCorrectAnswer(userAnswer: string, expectedAnswer: string) {
   const user = normalizeText(userAnswer);
   const expected = normalizeText(expectedAnswer);
@@ -102,7 +180,19 @@ function isCorrectAnswer(userAnswer: string, expectedAnswer: string) {
     return false;
   }
 
-  return user === expected || user.includes(expected) || expected.includes(user);
+  if (user === expected || user.includes(expected) || expected.includes(user)) {
+    return true;
+  }
+
+  const userWords = wordSet(user);
+  const expectedWords = wordSet(expected);
+  const sharedWords = [...expectedWords].filter((word) => userWords.has(word));
+
+  if (expectedWords.size > 0 && sharedWords.length / expectedWords.size >= 0.6) {
+    return true;
+  }
+
+  return similarity(user, expected) >= 0.72;
 }
 
 export default function Home() {
@@ -128,7 +218,7 @@ export default function Home() {
 
   const cycleKey = useMemo(() => riddleCycleKey(now), [now]);
   const riddle = useMemo(() => riddleFor(cycleKey), [cycleKey]);
-  const answersStorageKey = `kimia-riddle-answers-${cycleKey}`;
+  const answersStorageKey = `kimia-riddle-answers-v4-${cycleKey}`;
   const isQuestionPhase = now.getHours() >= 23 || now.getHours() < 13;
   const winningAnswer = useMemo(() => {
     return storedAnswers.find((entry) => isCorrectAnswer(entry.answer, riddle.answer)) ?? null;
@@ -170,8 +260,12 @@ export default function Home() {
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
-    const cacheKey = `kimia-daily-quote-${today}`;
+    const cacheKey = `kimia-daily-quote-v4-${today}`;
     const cachedQuote = window.localStorage.getItem(cacheKey);
+
+    Object.keys(window.localStorage)
+      .filter((key) => key.startsWith("kimia-daily-quote-") && key !== cacheKey)
+      .forEach((key) => window.localStorage.removeItem(key));
 
     if (cachedQuote) {
       setQuote(JSON.parse(cachedQuote) as DailyQuote);
@@ -294,6 +388,7 @@ export default function Home() {
             <p>KIMIA</p>
             <span />
           </div>
+          <p className="inspiration-label">{quote.inspiration}</p>
 
           {error ? <p className="error-message">{error}</p> : null}
         </article>
@@ -339,6 +434,7 @@ export default function Home() {
                 <h2 id="question-modal-title">
                   {hasCorrectAnswer ? "La reponse a ete trouvee" : "Personne n'a trouve cette fois"}
                 </h2>
+                <p className="question-recap">{riddle.question}</p>
                 <p className="revealed-answer">{riddle.answer}</p>
                 {winningAnswer ? <p className="winner-name">Trouvee par {winningAnswer.pseudo}</p> : null}
                 <button className="primary-action" type="button" onClick={closeQuestion}>
@@ -359,6 +455,7 @@ export default function Home() {
             ) : (
               <>
                 <p className="modal-kicker">Devinette du jour</p>
+                <p className="riddle-source">{riddle.inspiration}</p>
                 <h2 id="question-modal-title">{riddle.question}</h2>
 
                 <form className="answer-form" onSubmit={submitAnswer}>
