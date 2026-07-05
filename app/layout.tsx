@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ndule | Citation du jour",
-  description: "Une citation inspirante et philosophique renouvelee chaque jour."
+  title: "KIMIA | Pensee du jour",
+  description: "Une pensee et une devinette quotidienne pour commencer la journee."
 };
 
 export default function RootLayout({
@@ -17,4 +17,3 @@ export default function RootLayout({
     </html>
   );
 }
-

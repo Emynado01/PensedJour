@@ -12,25 +12,25 @@ type DailyQuote = {
 const fallbackQuotes = [
   {
     quote: "Chaque matin contient une porte discrete vers une vie plus vraie.",
-    author: "Ndule",
+    author: "KIMIA",
     reflection:
       "Choisis une seule chose a rendre plus claire aujourd'hui, puis avance sans bruit."
   },
   {
     quote: "La paix n'est pas l'absence de questions, mais l'art de marcher avec elles.",
-    author: "Ndule",
+    author: "KIMIA",
     reflection:
       "Observe ce qui insiste en toi sans le juger: une reponse commence souvent par l'ecoute."
   },
   {
     quote: "Ce que tu contemples avec patience finit par t'enseigner sa lumiere.",
-    author: "Ndule",
+    author: "KIMIA",
     reflection:
       "Laisse la journee te parler lentement avant de decider ce qu'elle signifie."
   },
   {
     quote: "Une ame attentive transforme l'ordinaire en commencement.",
-    author: "Ndule",
+    author: "KIMIA",
     reflection:
       "Ralentis devant le banal: il porte parfois la sagesse que le spectaculaire cache."
   }
@@ -100,7 +100,7 @@ export async function GET() {
       model: process.env.OPENAI_MODEL || "gpt-5.5",
       instructions:
         "Tu ecris des citations inspirees, philosophiques et lumineuses en francais. Reponds uniquement en JSON valide.",
-      input: `Cree la citation du jour pour ${date}. Elle doit etre originale, profonde, courte, sans cliche, avec un auteur fictif ou 'Ndule'. Retourne exactement ce JSON: {"quote":"...","author":"...","reflection":"..."}`,
+      input: `Cree la citation du jour pour ${date}. Elle doit etre originale, profonde, courte, sans cliche, avec un auteur fictif ou 'KIMIA'. Retourne exactement ce JSON: {"quote":"...","author":"...","reflection":"..."}`,
       text: {
         format: {
           type: "json_object"
@@ -125,4 +125,3 @@ export async function GET() {
     });
   }
 }
-
