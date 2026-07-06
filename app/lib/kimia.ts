@@ -137,78 +137,114 @@ const fallbackQuotes = [
   }
 ];
 
-const riddleBank = [
+export const riddleBank: DailyRiddle[] = [
   {
     question:
-      "Dans Le Seigneur des anneaux, je suis minuscule, je brille, et je transforme tout le monde en mauvais collegue. Qui suis-je ?",
+      "Plus je sèche, plus je deviens mouillée. Qui suis-je ?",
+    answer: "La serviette",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "J'ai des dents, mais je ne mange jamais. Qui suis-je ?",
+    answer: "Le peigne",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je cours sans jambes et je ne m'arrête jamais vraiment. Qui suis-je ?",
+    answer: "L'eau",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je peux remplir une pièce sans prendre de place. Qui suis-je ?",
+    answer: "La lumière",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je suis toujours devant toi, mais tu ne peux jamais me rattraper. Qui suis-je ?",
+    answer: "L'avenir",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "On me casse avant de m'utiliser. Qui suis-je ?",
+    answer: "L'oeuf",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je grandis quand on me retire des morceaux. Qui suis-je ?",
+    answer: "Un trou",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je parle sans bouche et j'entends sans oreilles. Qui suis-je ?",
+    answer: "L'écho",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Plus on en prend, plus on en laisse derrière soi. Qui suis-je ?",
+    answer: "Les pas",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Je suis noir quand tu m'achètes, rouge quand tu m'utilises et gris quand tu me jettes. Qui suis-je ?",
+    answer: "Le charbon",
+    inspiration: "Devinette classique"
+  },
+  {
+    question:
+      "Dans Le Seigneur des anneaux, je suis petit, circulaire et capable de faire perdre la raison à ceux qui me désirent. Qui suis-je ?",
     answer: "L'anneau",
-    inspiration: "Le Seigneur des anneaux"
+    inspiration: "Référence au Seigneur des anneaux"
   },
   {
     question:
-      "Dans Matrix, je suis rouge ou bleue, mais je ne soigne aucun rhume. Je change juste ta facon de voir le monde. Qui suis-je ?",
-    answer: "La pilule",
-    inspiration: "Matrix"
+      "Dans Matrix, je symbolise le choix entre rester dans l'illusion ou voir la réalité. Qui suis-je ?",
+    answer: "La pilule rouge",
+    inspiration: "Référence à Matrix"
   },
   {
     question:
-      "Dans Harry Potter, je ne suis pas un plan RH, mais je choisis ta maison et parfois ton ego. Qui suis-je ?",
-    answer: "Le Choixpeau",
-    inspiration: "Harry Potter"
-  },
-  {
-    question:
-      "Dans Star Wars, je suis partout, mais impossible de me mettre en bouteille pour la pause cafe. Qui suis-je ?",
+      "Dans Star Wars, je relie les êtres vivants, guide certains héros et donne de très mauvais projets aux méchants. Qui suis-je ?",
     answer: "La Force",
-    inspiration: "Star Wars"
+    inspiration: "Référence à Star Wars"
   },
   {
     question:
-      "Dans Le Roi Lion, je veux dire: respire, avance, et arrete de ruminer comme si c'etait un metier. Qui suis-je ?",
+      "Dans Harry Potter, je suis un vieux chapeau capable de décider dans quelle maison un élève va commencer son aventure. Qui suis-je ?",
+    answer: "Le Choixpeau",
+    inspiration: "Référence à Harry Potter"
+  },
+  {
+    question:
+      "Dans Le Roi Lion, je résume une philosophie simple: moins de souci, plus de vie. Qui suis-je ?",
     answer: "Hakuna Matata",
-    inspiration: "Le Roi Lion"
+    inspiration: "Référence au Roi Lion"
   },
   {
     question:
-      "Dans Inside Out, je prouve qu'une larme peut parfois faire mieux qu'un grand sourire force. Qui suis-je ?",
-    answer: "La tristesse",
-    inspiration: "Inside Out"
-  },
-  {
-    question:
-      "Dans Ted Lasso, je ressemble a un mot simple sur un panneau, mais je fais courir l'espoir plus vite qu'un coach. Qui suis-je ?",
-    answer: "Believe",
-    inspiration: "Ted Lasso"
-  },
-  {
-    question:
-      "Dans Toy Story, je suis une mission immense, meme quand on part d'une chambre d'enfant. Qui suis-je ?",
-    answer: "Vers l'infini et au-dela",
-    inspiration: "Toy Story"
-  },
-  {
-    question:
-      "Chez Socrate, je commence souvent par dire 'je ne sais pas', ce qui est pratique quand on n'a pas revise. Qui suis-je ?",
-    answer: "La sagesse",
-    inspiration: "Socrate"
-  },
-  {
-    question:
-      "Dans la culture japonaise, je repare les fissures avec de l'or au lieu de faire semblant qu'elles n'existent pas. Qui suis-je ?",
+      "Dans la tradition japonaise, je répare les fissures avec de l'or au lieu de les cacher. Qui suis-je ?",
     answer: "Le kintsugi",
     inspiration: "Culture japonaise"
   },
   {
     question:
-      "Avec Nelson Mandela, je demande du temps, du calme et une tete dure, mais je finis par ouvrir les portes. Qui suis-je ?",
-    answer: "La perseverance",
-    inspiration: "Nelson Mandela"
+      "Chez les stoïciens, je ne contrôle ni les événements ni la météo, mais je peux contrôler ma manière de répondre. Qui suis-je ?",
+    answer: "Le jugement",
+    inspiration: "Stoïcisme"
   },
   {
     question:
-      "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma réponse. Qui suis-je ?",
-    answer: "Le jugement",
-    inspiration: "Stoicisme"
+      "Dans Le Voyage de Chihiro, je peux être perdu, volé ou retrouvé; sans moi, on oublie qui l'on est. Qui suis-je ?",
+    answer: "Le nom",
+    inspiration: "Référence au Voyage de Chihiro"
   }
 ];
 
@@ -247,6 +283,18 @@ export function fallbackQuoteFor(cycleKey: string): DailyQuote {
 
 export function riddleFor(cycleKey: string): DailyRiddle {
   return riddleBank[seededIndex(cycleKey, riddleBank.length)];
+}
+
+export function nextRiddle(currentQuestion = "", recentQuestions: string[] = []) {
+  const availableRiddles = riddleBank.filter(
+    (riddle) => riddle.question !== currentQuestion && !recentQuestions.includes(riddle.question)
+  );
+  const pool = availableRiddles.length > 0
+    ? availableRiddles
+    : riddleBank.filter((riddle) => riddle.question !== currentQuestion);
+  const finalPool = pool.length > 0 ? pool : riddleBank;
+
+  return finalPool[Math.floor(Math.random() * finalPool.length)];
 }
 
 export function normalizeText(value: string) {

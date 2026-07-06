@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { DailyQuote, DailyRiddle, PublicContent, riddleCycleKey } from "../lib/kimia";
+import { DailyQuote, DailyRiddle, PublicContent, nextRiddle, riddleCycleKey } from "../lib/kimia";
 
 const ADMIN_RECENT_RIDDLES_KEY = "kimia-admin-recent-riddles";
 
@@ -16,157 +16,10 @@ const defaultQuote: DailyQuote = {
 
 const defaultRiddle: DailyRiddle = {
   question:
-    "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma réponse. Qui suis-je ?",
-  answer: "Le jugement",
-  inspiration: "Stoïcisme"
+    "Plus je sèche, plus je deviens mouillée. Qui suis-je ?",
+  answer: "La serviette",
+  inspiration: "Devinette classique"
 };
-
-const riddleIdeas: DailyRiddle[] = [
-  {
-    question:
-      "Dans Le Petit Prince, je suis invisible pour les yeux, mais je rends les choses vraiment importantes. Qui suis-je ?",
-    answer: "L'essentiel",
-    inspiration: "Le Petit Prince"
-  },
-  {
-    question:
-      "Dans la culture japonaise, je transforme les fissures en traces d'or au lieu de les cacher. Qui suis-je ?",
-    answer: "Le kintsugi",
-    inspiration: "Culture japonaise"
-  },
-  {
-    question:
-      "Chez Socrate, je commence par avouer que je ne sais pas, ce qui est deja plus honnete que beaucoup de reunions. Qui suis-je ?",
-    answer: "La sagesse",
-    inspiration: "Socrate"
-  },
-  {
-    question:
-      "Avec Mandela, je demande du temps, du courage et une patience solide, mais je finis par ouvrir les portes. Qui suis-je ?",
-    answer: "La persévérance",
-    inspiration: "Nelson Mandela"
-  },
-  {
-    question:
-      "Dans Star Wars, je suis partout, mais impossible de me mettre en bouteille pour la pause cafe. Qui suis-je ?",
-    answer: "La Force",
-    inspiration: "Star Wars"
-  },
-  {
-    question:
-      "Dans Matrix, je suis petite, rouge ou bleue, et je peux transformer un lundi banal en crise existentielle. Qui suis-je ?",
-    answer: "La pilule",
-    inspiration: "Matrix"
-  },
-  {
-    question:
-      "Dans Le Seigneur des anneaux, je suis minuscule, je brille, et pourtant tout le monde perd son calme a cause de moi. Qui suis-je ?",
-    answer: "L'anneau",
-    inspiration: "Le Seigneur des anneaux"
-  },
-  {
-    question:
-      "Chez Sherlock Holmes, je suis souvent devant tout le monde, mais il faut arreter de paniquer pour me voir. Qui suis-je ?",
-    answer: "L'indice",
-    inspiration: "Sherlock Holmes"
-  },
-  {
-    question:
-      "Dans Harry Potter, je suis lancee avec une baguette, mais au travail on prefere quand je ressemble a une bonne idee. Qui suis-je ?",
-    answer: "La magie",
-    inspiration: "Harry Potter"
-  },
-  {
-    question:
-      "Chez Confucius, je peux etre long, lent et parfois penible, mais je commence toujours par un premier pas. Qui suis-je ?",
-    answer: "Le chemin",
-    inspiration: "Confucius"
-  },
-  {
-    question:
-      "Chez Marc Aurele, je ne controle pas la panne, la pluie ou le planning, mais je decide comment je reponds. Qui suis-je ?",
-    answer: "L'attitude",
-    inspiration: "Marc Aurèle"
-  },
-  {
-    question:
-      "Dans Toy Story, je ne suis pas une fusee, mais je fais avancer tout le monde quand personne ne veut rester seul. Qui suis-je ?",
-    answer: "L'amitie",
-    inspiration: "Toy Story"
-  },
-  {
-    question:
-      "Dans Le Roi Lion, je te suis partout, surtout quand tu fais semblant de ne pas avoir de responsabilites. Qui suis-je ?",
-    answer: "Le passé",
-    inspiration: "Le Roi Lion"
-  },
-  {
-    question:
-      "Dans Kung Fu Panda, je suis rond, gourmand, un peu maladroit, mais je finis par prouver que la confiance pese plus lourd que les muscles. Qui suis-je ?",
-    answer: "Po",
-    inspiration: "Kung Fu Panda"
-  },
-  {
-    question:
-      "Chez Rumi, je ressemble parfois a une fissure, mais c'est par la que quelque chose de lumineux peut entrer. Qui suis-je ?",
-    answer: "La blessure",
-    inspiration: "Rumi"
-  },
-  {
-    question:
-      "Dans Forrest Gump, je suis dans une boite, on ne sait jamais sur quoi on va tomber, un peu comme certains mails du matin. Qui suis-je ?",
-    answer: "Le chocolat",
-    inspiration: "Forrest Gump"
-  },
-  {
-    question:
-      "Chez Socrate, je derange un peu, je ralentis les certitudes, mais je rend tout le monde moins automatique. Qui suis-je ?",
-    answer: "La question",
-    inspiration: "Socrate"
-  },
-  {
-    question:
-      "Dans la culture zen, je ne fais pas de bruit, je ne gagne pas de debat, mais je remet souvent l'esprit a l'endroit. Qui suis-je ?",
-    answer: "Le silence",
-    inspiration: "Sagesse zen"
-  },
-  {
-    question:
-      "Dans Star Wars, je suis minuscule, vert, tres vieux, et je parle comme si la grammaire avait pris un jour de conge. Qui suis-je ?",
-    answer: "Yoda",
-    inspiration: "Star Wars"
-  },
-  {
-    question:
-      "Dans un proverbe africain, je permet d'aller loin quand aller vite ne suffit plus. Qui suis-je ?",
-    answer: "Ensemble",
-    inspiration: "Proverbe africain"
-  },
-  {
-    question:
-      "Dans Le Voyage de Chihiro, je peux disparaitre si tu oublies qui tu es. Qui suis-je ?",
-    answer: "Le nom",
-    inspiration: "Le Voyage de Chihiro"
-  },
-  {
-    question:
-      "Chez Nelson Mandela, je demande beaucoup de patience, mais je finis par ouvrir des portes que la colere gardait fermees. Qui suis-je ?",
-    answer: "Le pardon",
-    inspiration: "Nelson Mandela"
-  },
-  {
-    question:
-      "Dans Amelie Poulain, je suis petit, discret, presque rien, mais je peux changer la couleur d'une journee. Qui suis-je ?",
-    answer: "Un détail",
-    inspiration: "Amélie Poulain"
-  },
-  {
-    question:
-      "Dans L'Alchimiste, je ne suis pas seulement au bout du voyage; parfois je marche deja avec toi. Qui suis-je ?",
-    answer: "Le trésor",
-    inspiration: "L'Alchimiste"
-  }
-];
 
 const localQuoteIdeas = [
   {
@@ -298,21 +151,8 @@ function readRecentRiddleQuestions() {
 
 function rememberRiddle(question: string) {
   const nextRecent = [question, ...readRecentRiddleQuestions().filter((item) => item !== question)]
-    .slice(0, Math.min(8, riddleIdeas.length - 1));
+    .slice(0, 8);
   window.localStorage.setItem(ADMIN_RECENT_RIDDLES_KEY, JSON.stringify(nextRecent));
-}
-
-function nextRiddle(currentQuestion: string) {
-  const recentQuestions = readRecentRiddleQuestions();
-  const availableRiddles = riddleIdeas.filter(
-    (riddle) => riddle.question !== currentQuestion && !recentQuestions.includes(riddle.question)
-  );
-  const pool = availableRiddles.length > 0
-    ? availableRiddles
-    : riddleIdeas.filter((riddle) => riddle.question !== currentQuestion);
-  const finalPool = pool.length > 0 ? pool : riddleIdeas;
-
-  return finalPool[Math.floor(Math.random() * finalPool.length)];
 }
 
 export default function AdminPage() {
@@ -369,11 +209,34 @@ export default function AdminPage() {
     }
   }
 
-  function generateRiddle() {
-    const generatedRiddle = nextRiddle(riddleDraft.question);
-    rememberRiddle(generatedRiddle.question);
-    setRiddleDraft(generatedRiddle);
-    setStatus("Devinette generee. Tu peux la modifier avant selection.");
+  async function generateRiddle() {
+    const recentQuestions = readRecentRiddleQuestions();
+    const params = new URLSearchParams({
+      fresh: "1",
+      nonce: String(Date.now()),
+      current: riddleDraft.question
+    });
+    recentQuestions.forEach((question) => params.append("recent", question));
+
+    setStatus("Generation de la devinette...");
+
+    try {
+      const response = await fetch(`/api/riddle?${params.toString()}`, { cache: "no-store" });
+
+      if (!response.ok) {
+        throw new Error("API devinette indisponible.");
+      }
+
+      const generatedRiddle = (await response.json()) as DailyRiddle;
+      rememberRiddle(generatedRiddle.question);
+      setRiddleDraft(generatedRiddle);
+      setStatus("Devinette generee. Tu peux la modifier avant selection.");
+    } catch {
+      const fallbackRiddle = nextRiddle(riddleDraft.question, recentQuestions);
+      rememberRiddle(fallbackRiddle.question);
+      setRiddleDraft(fallbackRiddle);
+      setStatus("Devinette locale generee, faute de reponse API.");
+    }
   }
 
   async function saveGlobalContent(nextQuote: DailyQuote, nextRiddle: DailyRiddle) {
