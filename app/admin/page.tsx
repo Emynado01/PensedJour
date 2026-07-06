@@ -202,7 +202,9 @@ export default function AdminPage() {
     setStatus("Generation de la citation...");
 
     try {
-      const response = await fetch("/api/quote?fresh=1", { cache: "no-store" });
+      const response = await fetch(`/api/quote?fresh=1&nonce=${Date.now()}`, {
+        cache: "no-store"
+      });
 
       if (!response.ok) {
         throw new Error("API indisponible");

@@ -155,6 +155,20 @@ const QUOTE_CRITERIA_VERSION = "broad-inspirations-v5";
 let cachedQuote: DailyQuote | null = null;
 let cachedQuoteKey: string | null = null;
 
+const dailyCacheHeaders = {
+  "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600"
+};
+
+const shortFallbackCacheHeaders = {
+  "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=300"
+};
+
+const noStoreHeaders = {
+  "Cache-Control": "no-store, max-age=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store"
+};
+
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -223,13 +237,12 @@ export async function GET(request: Request) {
   const date = todayKey();
   const quoteKey = `${QUOTE_CRITERIA_VERSION}-${date}`;
   const shouldBypassCache = new URL(request.url).searchParams.get("fresh") === "1";
+  const responseHeaders = shouldBypassCache ? noStoreHeaders : dailyCacheHeaders;
   const sourceDirection = sourceDirectionFor(date, shouldBypassCache);
 
   if (!shouldBypassCache && cachedQuote?.date === date && cachedQuoteKey === quoteKey) {
     return NextResponse.json(cachedQuote, {
-      headers: {
-        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600"
-      }
+      headers: dailyCacheHeaders
     });
   }
 
@@ -237,9 +250,7 @@ export async function GET(request: Request) {
 
   if (!apiKey) {
     return NextResponse.json(fallbackFor(date, shouldBypassCache), {
-      headers: {
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=300"
-      }
+      headers: shouldBypassCache ? noStoreHeaders : shortFallbackCacheHeaders
     });
   }
 
@@ -257,21 +268,21 @@ export async function GET(request: Request) {
       }
     });
 
-    cachedQuote = normalizeQuote(response.output_text, date);
-    cachedQuoteKey = quoteKey;
+    const generatedQuote = normalizeQuote(response.output_text, date);
 
-    return NextResponse.json(cachedQuote, {
-      headers: {
-        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600"
-      }
+    if (!shouldBypassCache) {
+      cachedQuote = generatedQuote;
+      cachedQuoteKey = quoteKey;
+    }
+
+    return NextResponse.json(generatedQuote, {
+      headers: responseHeaders
     });
   } catch (error) {
     console.error("Unable to generate daily quote", error);
 
     return NextResponse.json(fallbackFor(date, shouldBypassCache), {
-      headers: {
-        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=300"
-      }
+      headers: shouldBypassCache ? noStoreHeaders : shortFallbackCacheHeaders
     });
   }
 }
