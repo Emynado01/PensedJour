@@ -19,6 +19,7 @@ type DailyRiddle = {
 
 const ADMIN_QUOTE_KEY = "kimia-admin-selected-quote";
 const ADMIN_RIDDLE_KEY = "kimia-admin-selected-riddle";
+const ADMIN_RECENT_RIDDLES_KEY = "kimia-admin-recent-riddles";
 
 const defaultQuote: DailyQuote = {
   quote: "Le calme revient quand tu choisis le prochain geste juste.",
@@ -39,7 +40,7 @@ const defaultRiddle: DailyRiddle = {
 const riddleIdeas: DailyRiddle[] = [
   {
     question:
-      "Dans Le Petit Prince, je suis invisible pour les yeux, mais je rend les choses vraiment importantes. Qui suis-je ?",
+      "Dans Le Petit Prince, je suis invisible pour les yeux, mais je rends les choses vraiment importantes. Qui suis-je ?",
     answer: "L'essentiel",
     inspiration: "Le Petit Prince"
   },
@@ -66,6 +67,120 @@ const riddleIdeas: DailyRiddle[] = [
       "Dans Star Wars, je suis partout, mais impossible de me mettre en bouteille pour la pause cafe. Qui suis-je ?",
     answer: "La Force",
     inspiration: "Star Wars"
+  },
+  {
+    question:
+      "Dans Matrix, je suis petite, rouge ou bleue, et je peux transformer un lundi banal en crise existentielle. Qui suis-je ?",
+    answer: "La pilule",
+    inspiration: "Matrix"
+  },
+  {
+    question:
+      "Dans Le Seigneur des anneaux, je suis minuscule, je brille, et pourtant tout le monde perd son calme a cause de moi. Qui suis-je ?",
+    answer: "L'anneau",
+    inspiration: "Le Seigneur des anneaux"
+  },
+  {
+    question:
+      "Chez Sherlock Holmes, je suis souvent devant tout le monde, mais il faut arreter de paniquer pour me voir. Qui suis-je ?",
+    answer: "L'indice",
+    inspiration: "Sherlock Holmes"
+  },
+  {
+    question:
+      "Dans Harry Potter, je suis lancee avec une baguette, mais au travail on prefere quand je ressemble a une bonne idee. Qui suis-je ?",
+    answer: "La magie",
+    inspiration: "Harry Potter"
+  },
+  {
+    question:
+      "Chez Confucius, je peux etre long, lent et parfois penible, mais je commence toujours par un premier pas. Qui suis-je ?",
+    answer: "Le chemin",
+    inspiration: "Confucius"
+  },
+  {
+    question:
+      "Chez Marc Aurele, je ne controle pas la panne, la pluie ou le planning, mais je decide comment je reponds. Qui suis-je ?",
+    answer: "L'attitude",
+    inspiration: "Marc Aurèle"
+  },
+  {
+    question:
+      "Dans Toy Story, je ne suis pas une fusee, mais je fais avancer tout le monde quand personne ne veut rester seul. Qui suis-je ?",
+    answer: "L'amitie",
+    inspiration: "Toy Story"
+  },
+  {
+    question:
+      "Dans Le Roi Lion, je te suis partout, surtout quand tu fais semblant de ne pas avoir de responsabilites. Qui suis-je ?",
+    answer: "Le passé",
+    inspiration: "Le Roi Lion"
+  },
+  {
+    question:
+      "Dans Kung Fu Panda, je suis rond, gourmand, un peu maladroit, mais je finis par prouver que la confiance pese plus lourd que les muscles. Qui suis-je ?",
+    answer: "Po",
+    inspiration: "Kung Fu Panda"
+  },
+  {
+    question:
+      "Chez Rumi, je ressemble parfois a une fissure, mais c'est par la que quelque chose de lumineux peut entrer. Qui suis-je ?",
+    answer: "La blessure",
+    inspiration: "Rumi"
+  },
+  {
+    question:
+      "Dans Forrest Gump, je suis dans une boite, on ne sait jamais sur quoi on va tomber, un peu comme certains mails du matin. Qui suis-je ?",
+    answer: "Le chocolat",
+    inspiration: "Forrest Gump"
+  },
+  {
+    question:
+      "Chez Socrate, je derange un peu, je ralentis les certitudes, mais je rend tout le monde moins automatique. Qui suis-je ?",
+    answer: "La question",
+    inspiration: "Socrate"
+  },
+  {
+    question:
+      "Dans la culture zen, je ne fais pas de bruit, je ne gagne pas de debat, mais je remet souvent l'esprit a l'endroit. Qui suis-je ?",
+    answer: "Le silence",
+    inspiration: "Sagesse zen"
+  },
+  {
+    question:
+      "Dans Star Wars, je suis minuscule, vert, tres vieux, et je parle comme si la grammaire avait pris un jour de conge. Qui suis-je ?",
+    answer: "Yoda",
+    inspiration: "Star Wars"
+  },
+  {
+    question:
+      "Dans un proverbe africain, je permet d'aller loin quand aller vite ne suffit plus. Qui suis-je ?",
+    answer: "Ensemble",
+    inspiration: "Proverbe africain"
+  },
+  {
+    question:
+      "Dans Le Voyage de Chihiro, je peux disparaitre si tu oublies qui tu es. Qui suis-je ?",
+    answer: "Le nom",
+    inspiration: "Le Voyage de Chihiro"
+  },
+  {
+    question:
+      "Chez Nelson Mandela, je demande beaucoup de patience, mais je finis par ouvrir des portes que la colere gardait fermees. Qui suis-je ?",
+    answer: "Le pardon",
+    inspiration: "Nelson Mandela"
+  },
+  {
+    question:
+      "Dans Amelie Poulain, je suis petit, discret, presque rien, mais je peux changer la couleur d'une journee. Qui suis-je ?",
+    answer: "Un détail",
+    inspiration: "Amélie Poulain"
+  },
+  {
+    question:
+      "Dans L'Alchimiste, je ne suis pas seulement au bout du voyage; parfois je marche deja avec toi. Qui suis-je ?",
+    answer: "Le trésor",
+    inspiration: "L'Alchimiste"
   }
 ];
 
@@ -172,6 +287,35 @@ function localQuote() {
   };
 }
 
+function readRecentRiddleQuestions() {
+  try {
+    const stored = window.localStorage.getItem(ADMIN_RECENT_RIDDLES_KEY);
+    const parsed = stored ? (JSON.parse(stored) as unknown) : [];
+    return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberRiddle(question: string) {
+  const nextRecent = [question, ...readRecentRiddleQuestions().filter((item) => item !== question)]
+    .slice(0, Math.min(8, riddleIdeas.length - 1));
+  window.localStorage.setItem(ADMIN_RECENT_RIDDLES_KEY, JSON.stringify(nextRecent));
+}
+
+function nextRiddle(currentQuestion: string) {
+  const recentQuestions = readRecentRiddleQuestions();
+  const availableRiddles = riddleIdeas.filter(
+    (riddle) => riddle.question !== currentQuestion && !recentQuestions.includes(riddle.question)
+  );
+  const pool = availableRiddles.length > 0
+    ? availableRiddles
+    : riddleIdeas.filter((riddle) => riddle.question !== currentQuestion);
+  const finalPool = pool.length > 0 ? pool : riddleIdeas;
+
+  return finalPool[Math.floor(Math.random() * finalPool.length)];
+}
+
 export default function AdminPage() {
   const [quoteDraft, setQuoteDraft] = useState<DailyQuote>(defaultQuote);
   const [riddleDraft, setRiddleDraft] = useState<DailyRiddle>(defaultRiddle);
@@ -222,8 +366,9 @@ export default function AdminPage() {
   }
 
   function generateRiddle() {
-    const nextRiddle = riddleIdeas[Math.floor(Math.random() * riddleIdeas.length)];
-    setRiddleDraft(nextRiddle);
+    const generatedRiddle = nextRiddle(riddleDraft.question);
+    rememberRiddle(generatedRiddle.question);
+    setRiddleDraft(generatedRiddle);
     setStatus("Devinette generee. Tu peux la modifier avant selection.");
   }
 
