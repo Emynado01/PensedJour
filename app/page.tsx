@@ -19,6 +19,12 @@ type StoredAnswer = {
   submittedAt: string;
 };
 
+type DailyRiddle = {
+  question: string;
+  answer: string;
+  inspiration: string;
+};
+
 const fallbackQuote: DailyQuote = {
   quote: "On avance mieux quand le tresor cherche devient une facon de regarder.",
   author: "KIMIA",
@@ -98,11 +104,14 @@ const riddleBank = [
   },
   {
     question:
-      "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma reponse. Qui suis-je ?",
+      "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma réponse. Qui suis-je ?",
     answer: "Le jugement",
     inspiration: "Stoicisme"
   }
 ];
+
+const ADMIN_QUOTE_KEY = "kimia-admin-selected-quote";
+const ADMIN_RIDDLE_KEY = "kimia-admin-selected-riddle";
 
 function localDateKey(date: Date) {
   const year = date.getFullYear();
@@ -197,6 +206,8 @@ function isCorrectAnswer(userAnswer: string, expectedAnswer: string) {
 
 export default function Home() {
   const [quote, setQuote] = useState<DailyQuote>(fallbackQuote);
+  const [adminQuote, setAdminQuote] = useState<DailyQuote | null>(null);
+  const [adminRiddle, setAdminRiddle] = useState<DailyRiddle | null>(null);
   const [now, setNow] = useState(() => new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -206,6 +217,9 @@ export default function Home() {
   const [answer, setAnswer] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [storedAnswers, setStoredAnswers] = useState<StoredAnswer[]>([]);
+  const [demoWinner, setDemoWinner] = useState<string | null>(null);
+
+  const displayedQuote = adminQuote ?? quote;
 
   const formattedDate = useMemo(() => {
     return new Intl.DateTimeFormat("fr-FR", {
@@ -213,28 +227,48 @@ export default function Home() {
       day: "numeric",
       month: "long",
       year: "numeric"
-    }).format(new Date(`${quote.date}T12:00:00`));
-  }, [quote.date]);
+    }).format(new Date(`${displayedQuote.date}T12:00:00`));
+  }, [displayedQuote.date]);
 
   const cycleKey = useMemo(() => riddleCycleKey(now), [now]);
-  const riddle = useMemo(() => riddleFor(cycleKey), [cycleKey]);
+  const automaticRiddle = useMemo(() => riddleFor(cycleKey), [cycleKey]);
+  const riddle = adminRiddle ?? automaticRiddle;
   const answersStorageKey = `kimia-riddle-answers-v4-${cycleKey}`;
   const isQuestionPhase = now.getHours() >= 23 || now.getHours() < 13;
   const winningAnswer = useMemo(() => {
-    return storedAnswers.find((entry) => isCorrectAnswer(entry.answer, riddle.answer)) ?? null;
-  }, [riddle.answer, storedAnswers]);
+    const storedWinner = storedAnswers.find((entry) => isCorrectAnswer(entry.answer, riddle.answer));
+
+    if (storedWinner) {
+      return storedWinner;
+    }
+
+    if (!demoWinner) {
+      return null;
+    }
+
+    return {
+      pseudo: demoWinner,
+      answer: riddle.answer,
+      cycleKey,
+      question: riddle.question,
+      submittedAt: new Date().toISOString()
+    };
+  }, [cycleKey, demoWinner, riddle.answer, riddle.question, storedAnswers]);
   const hasCorrectAnswer = Boolean(winningAnswer);
   const bubbleState = isQuestionPhase ? "question" : hasCorrectAnswer ? "found" : "missed";
   const bubbleIcon = isQuestionPhase ? "?" : hasCorrectAnswer ? "👍" : "😕";
   const bubbleLabel = isQuestionPhase
     ? "Ouvrir la devinette du jour"
     : hasCorrectAnswer
-      ? "Reponse trouvee"
-      : "Reponse non trouvee";
+      ? "Réponse trouvée"
+      : "Réponse non trouvée";
   const quoteWords = useMemo(() => {
-    const text = isLoading ? "Une pensee prend forme pour commencer la journee." : quote.quote;
+    const text =
+      isLoading && !adminQuote
+        ? "Une pensee prend forme pour commencer la journee."
+        : displayedQuote.quote;
     return text.split(" ");
-  }, [isLoading, quote.quote]);
+  }, [adminQuote, displayedQuote.quote, isLoading]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -242,6 +276,24 @@ export default function Home() {
     }, 60_000);
 
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const savedQuote = window.localStorage.getItem(ADMIN_QUOTE_KEY);
+    const savedRiddle = window.localStorage.getItem(ADMIN_RIDDLE_KEY);
+
+    if (savedQuote) {
+      setAdminQuote(JSON.parse(savedQuote) as DailyQuote);
+    }
+
+    if (savedRiddle) {
+      setAdminRiddle(JSON.parse(savedRiddle) as DailyRiddle);
+    }
+  }, []);
+
+  useEffect(() => {
+    const winner = new URLSearchParams(window.location.search).get("demoWinner")?.trim();
+    setDemoWinner(winner || null);
   }, []);
 
   useEffect(() => {
@@ -362,7 +414,7 @@ export default function Home() {
         <article className="quote-card">
           <p className="date-label">{formattedDate}</p>
 
-          <blockquote className={isLoading ? "quote loading" : "quote"}>
+          <blockquote className={isLoading && !adminQuote ? "quote loading" : "quote"}>
             <span aria-hidden="true" className="quote-mark">
               “
             </span>
@@ -388,7 +440,7 @@ export default function Home() {
             <p>KIMIA</p>
             <span />
           </div>
-          <p className="inspiration-label">{quote.inspiration}</p>
+          <p className="inspiration-label">{displayedQuote.inspiration}</p>
 
           {error ? <p className="error-message">{error}</p> : null}
         </article>
@@ -430,13 +482,13 @@ export default function Home() {
             {!isQuestionPhase ? (
               <div className={hasCorrectAnswer ? "answer-result is-found" : "answer-result is-missed"}>
                 <span className="result-icon">{hasCorrectAnswer ? "👍" : "😕"}</span>
-                <p className="modal-kicker">Reponse du jour</p>
+                <p className="modal-kicker">Réponse du jour</p>
                 <h2 id="question-modal-title">
-                  {hasCorrectAnswer ? "La reponse a ete trouvee" : "Personne n'a trouve cette fois"}
+                  {hasCorrectAnswer ? "La réponse a été trouvée" : "Personne n'a trouvé cette fois"}
                 </h2>
                 <p className="question-recap">{riddle.question}</p>
                 <p className="revealed-answer">{riddle.answer}</p>
-                {winningAnswer ? <p className="winner-name">Trouvee par {winningAnswer.pseudo}</p> : null}
+                {winningAnswer ? <p className="winner-name">Trouvée par {winningAnswer.pseudo}</p> : null}
                 <button className="primary-action" type="button" onClick={closeQuestion}>
                   Fermer
                 </button>
@@ -444,9 +496,9 @@ export default function Home() {
             ) : hasSubmitted ? (
               <div className="success-state">
                 <span className="success-icon">✓</span>
-                <h2 id="question-modal-title">Merci pour ta reponse</h2>
+                <h2 id="question-modal-title">Merci pour ta réponse</h2>
                 <p>
-                  Ta proposition est enregistree pour la devinette en cours.
+                  Ta proposition est enregistrée pour la devinette en cours.
                 </p>
                 <button className="primary-action" type="button" onClick={closeQuestion}>
                   Fermer
@@ -468,7 +520,7 @@ export default function Home() {
                     value={pseudo}
                     onChange={(event) => setPseudo(event.target.value)}
                   />
-                  <label htmlFor="daily-answer">Ta reponse</label>
+                  <label htmlFor="daily-answer">Ta réponse</label>
                   <textarea
                     id="daily-answer"
                     maxLength={360}
