@@ -12,145 +12,145 @@ type DailyQuote = {
 
 const fallbackQuotes = [
   {
-    quote: "On avance mieux quand le tresor cherche devient une facon de regarder.",
-    author: "KIMIA",
-    inspiration: "Inspiré de l'Alchimiste",
+    quote: "Connais-toi toi-même.",
+    author: "Socrate",
+    inspiration: "Citation attribuée à Socrate",
     reflection:
-      "Reste attentif au chemin: il sait parfois parler avant l'arrivee."
+      "Une phrase courte pour revenir a soi avant de chercher trop loin."
   },
   {
-    quote: "Ce que tu fais avec patience finit par donner une forme a ton courage.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Nelson Mandela",
+    quote: "Le bonheur dépend de nous.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "La force n'est pas toujours spectaculaire: elle tient souvent dans ce qu'on recommence sans bruit."
+      "Elle rappelle que la joie se travaille aussi dans nos choix ordinaires."
   },
   {
-    quote: "La clarte arrive quand tu cesses de te battre contre le moment present.",
-    author: "KIMIA",
-    inspiration: "Inspiré du stoicisme",
+    quote: "Ce qui ne me tue pas me rend plus fort.",
+    author: "Friedrich Nietzsche",
+    inspiration: "Citation de Friedrich Nietzsche",
     reflection:
-      "Observe ce qui depend de toi, puis laisse le reste perdre son poids."
+      "Une pensee directe sur la resilience et la transformation par l'epreuve."
   },
   {
-    quote: "Le courage commence souvent par rester doux quand tout pousse a durcir.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Forrest Gump",
+    quote: "Il faut cultiver notre jardin.",
+    author: "Voltaire",
+    inspiration: "Citation de Voltaire",
     reflection:
-      "Garde un geste simple et bon: il peut changer plus que tu ne crois."
+      "Une invitation a revenir au concret, au soin et a l'action utile."
   },
   {
-    quote: "Grandir, c'est apprendre a regarder ses peurs sans leur donner le volant.",
-    author: "KIMIA",
-    inspiration: "Inspiré d'Inside Out",
+    quote: "Ose savoir !",
+    author: "Emmanuel Kant",
+    inspiration: "Citation d'Emmanuel Kant",
     reflection:
-      "Accueille ce qui traverse ton humeur: tout ne commande pas, beaucoup informe."
+      "Une formule breve pour encourager la lucidite et l'autonomie."
   },
   {
-    quote: "La paix se fabrique dans les petits choix qu'on repete quand personne ne regarde.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Kung Fu Panda",
+    quote: "Aide-toi, le ciel t'aidera.",
+    author: "Jean de La Fontaine",
+    inspiration: "Citation de Jean de La Fontaine",
     reflection:
-      "Choisis le geste juste maintenant, puis laisse la suite respirer."
+      "Elle valorise l'initiative, meme quand le resultat semble encore loin."
   },
   {
-    quote: "Une equipe devient forte quand chacun ose apporter sa lumiere sans prendre toute la place.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Ted Lasso",
+    quote: "Rien ne sert de courir; il faut partir à point.",
+    author: "Jean de La Fontaine",
+    inspiration: "Citation de Jean de La Fontaine",
     reflection:
-      "La bonne humeur n'est pas naive quand elle aide les autres a tenir debout."
+      "Un rappel simple: la regularite peut valoir mieux que la precipitation."
   },
   {
-    quote: "Le bonheur n'est pas toujours une destination; parfois c'est le pas qu'on rend plus humain.",
-    author: "KIMIA",
-    inspiration: "Inspiré du Voyage de Chihiro",
+    quote: "Un voyage de mille lieues commence toujours par un premier pas.",
+    author: "Lao Tseu",
+    inspiration: "Citation attribuée à Lao Tseu",
     reflection:
-      "Traverse la journee avec presence: ce qui semble flou peut devenir passage."
+      "Elle remet les grands objectifs a la taille du prochain geste."
   },
   {
-    quote: "Un esprit tranquille entend parfois ce que l'urgence essaie de couvrir.",
-    author: "KIMIA",
-    inspiration: "Inspiré de la sagesse zen",
+    quote: "La simplicité est la sophistication suprême.",
+    author: "Léonard de Vinci",
+    inspiration: "Citation attribuée à Léonard de Vinci",
     reflection:
-      "Avant de forcer la reponse, accorde-toi assez de silence pour la reconnaitre."
+      "Une phrase utile pour chercher la justesse plutot que l'exces."
   },
   {
-    quote: "Se connaitre un peu mieux rend chaque choix moins bruyant.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Socrate",
+    quote: "Tout ce que je sais, c'est que je ne sais rien.",
+    author: "Socrate",
+    inspiration: "Citation attribuée à Socrate",
     reflection:
-      "La vraie lucidite commence souvent par une question honnete posee a soi-meme."
+      "Une bonne porte d'entree vers l'humilite et l'apprentissage."
   },
   {
-    quote: "Ce qui passe ne t'enleve pas tout: parfois, cela te rend plus libre.",
-    author: "KIMIA",
-    inspiration: "Inspiré d'une sagesse persane",
+    quote: "La vie est un sommeil, l'amour en est le rêve.",
+    author: "Alfred de Musset",
+    inspiration: "Citation d'Alfred de Musset",
     reflection:
-      "Quand une emotion traverse, laisse-la passer sans lui offrir toute la maison."
+      "Une phrase poetique pour garder une place a la douceur."
   },
   {
-    quote: "Le chemin devient plus clair quand tu avances avec ce que tu as, pas avec ce qui manque.",
-    author: "KIMIA",
-    inspiration: "Inspiré du Seigneur des anneaux",
+    quote: "Le doute est le commencement de la sagesse.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "Le courage se reconnait souvent dans les petits pas qui continuent malgre l'incertitude."
+      "Elle transforme l'incertitude en point de depart, pas en faiblesse."
   },
   {
-    quote: "Une journee difficile peut encore contenir un geste qui remet de la lumiere.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Victor Hugo",
+    quote: "La patience est amère, mais son fruit est doux.",
+    author: "Jean-Jacques Rousseau",
+    inspiration: "Citation attribuée à Jean-Jacques Rousseau",
     reflection:
-      "Cherche la petite action juste: elle peut rouvrir l'espace quand tout semble serre."
+      "Elle encourage a tenir sans confondre lenteur et immobilite."
   },
   {
-    quote: "Ce que tu choisis de nourrir finit par dessiner ton horizon.",
-    author: "KIMIA",
-    inspiration: "Inspiré d'un proverbe populaire",
+    quote: "Il n'y a point de génie sans un grain de folie.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "Donne ton attention a ce qui t'aide a grandir, pas seulement a ce qui fait du bruit."
+      "Une phrase pour laisser un peu de place a l'audace."
   },
   {
-    quote: "La joie ne demande pas toujours plus; parfois elle demande seulement d'etre la.",
-    author: "KIMIA",
-    inspiration: "Inspiré d'Amelie Poulain",
+    quote: "L'homme est né libre, et partout il est dans les fers.",
+    author: "Jean-Jacques Rousseau",
+    inspiration: "Citation de Jean-Jacques Rousseau",
     reflection:
-      "Un detail simple peut changer la couleur d'une journee quand tu lui laisses une place."
+      "Elle invite a interroger les habitudes qui enferment."
   },
   {
-    quote: "Avancer, ce n'est pas tout comprendre: c'est refuser de laisser la peur conduire seule.",
-    author: "KIMIA",
-    inspiration: "Inspiré de Matrix",
+    quote: "Science sans conscience n'est que ruine de l'âme.",
+    author: "François Rabelais",
+    inspiration: "Citation de François Rabelais",
     reflection:
-      "La clarte vient quand tu choisis de regarder ce qui t'endort au lieu de le subir."
+      "Un rappel a relier competence, responsabilite et humanite."
   }
 ];
 
 const quoteSourceDirections = [
-  "une citation populaire de sagesse autour de 'connais-toi toi-meme', attribuee a Socrate",
-  "une citation populaire de sagesse persane autour de l'idee 'cela aussi passera'",
-  "Le Seigneur des anneaux, pour le courage discret et le poids du chemin",
-  "Matrix, pour le reveil, le choix et la lucidite",
-  "Le Voyage de Chihiro, pour la transformation douce et la memoire de soi",
-  "Nelson Mandela, pour la patience, la liberte interieure et la perseverance",
-  "Victor Hugo, pour la lumiere, la dignite et l'esperance",
-  "Maya Angelou, pour l'estime de soi et la force calme",
-  "la philosophie stoicienne, pour distinguer ce qui depend de nous",
-  "la sagesse zen, pour le calme, l'attention et la simplicite",
-  "un proverbe africain populaire, pour la communaute et le pas collectif",
-  "un proverbe japonais populaire, pour la patience et la resilience",
-  "Forrest Gump, pour la simplicite courageuse et l'optimisme",
-  "Kung Fu Panda, pour l'apprentissage, l'humour et la confiance",
-  "Ted Lasso, pour la gentillesse active et l'esprit d'equipe",
-  "Amelie Poulain, pour la joie simple et les petits gestes lumineux",
-  "Le Roi Lion, pour la responsabilite et le fait de retrouver sa place",
-  "Harry Potter, pour le courage de choisir ce qui est juste",
-  "L'Alchimiste, pour l'ecoute du chemin et le sens de la quete",
-  "une citation populaire attribuee a Marc Aurele, pour la maitrise de soi",
-  "une citation populaire attribuee a Confucius, pour apprendre pas a pas",
-  "une citation populaire attribuee a Rumi, pour la transformation interieure"
+  "une citation exacte de Socrate ou attribuee a Socrate",
+  "une citation exacte d'Aristote ou attribuee a Aristote",
+  "une citation exacte de Marc Aurele",
+  "une citation exacte d'Epictete",
+  "une citation exacte de Seneque",
+  "une citation exacte de Confucius",
+  "une citation exacte de Lao Tseu ou attribuee a Lao Tseu",
+  "une citation exacte de Rumi ou attribuee a Rumi",
+  "une citation exacte de Victor Hugo",
+  "une citation exacte de Voltaire",
+  "une citation exacte de Jean de La Fontaine",
+  "une citation exacte de Montaigne",
+  "une citation exacte de Blaise Pascal",
+  "une citation exacte de Friedrich Nietzsche",
+  "une citation exacte de Jean-Jacques Rousseau",
+  "une citation exacte de Francois Rabelais",
+  "une citation exacte de Baruch Spinoza",
+  "une citation exacte d'Emmanuel Kant",
+  "un proverbe africain connu, mot pour mot",
+  "un proverbe japonais connu, mot pour mot",
+  "un proverbe chinois connu, mot pour mot",
+  "un proverbe persan connu, mot pour mot"
 ];
 
-const QUOTE_CRITERIA_VERSION = "broad-inspirations-v5";
+const QUOTE_CRITERIA_VERSION = "exact-existing-quotes-v1";
 
 let cachedQuote: DailyQuote | null = null;
 let cachedQuoteKey: string | null = null;
@@ -259,8 +259,8 @@ export async function GET(request: Request) {
     const response = await client.responses.create({
       model: process.env.OPENAI_MODEL || "gpt-4o-mini",
       instructions:
-        "Tu ecris des pensees inspirees, philosophiques et lumineuses en francais. Reponds uniquement en JSON valide.",
-      input: `Cree la pensee du jour pour ${date}. Source a utiliser cette fois: ${sourceDirection}. La phrase doit etre originale, motivante, introspective et liee a la joie simple, la paix interieure, le courage calme, la clarte ou l'art de recommencer. Tu peux partir d'une citation populaire, d'un livre, d'un film, d'une serie, d'un personnage historique, d'un courant philosophique ou d'une culture du monde, mais tu dois varier les sources entre les generations. N'utilise pas Le Petit Prince dans cette generation, sauf demande explicite plus tard. N'ecris pas une citation exacte issue d'une oeuvre protegee; si tu reprends une citation populaire exacte, elle doit etre courte, ancienne, publique ou attribuee a un personnage historique. Sinon, cree une phrase nouvelle, courte et humaine dans l'esprit de la reference choisie. L'auteur doit etre 'KIMIA'. Pour inspiration, utilise une grammaire francaise correcte: "Inspiré du ...", "Inspiré de la ...", "Inspiré de l'...", "Inspiré des ...", ou "Inspiré de ..." selon le titre. Retourne exactement ce JSON: {"quote":"...","author":"KIMIA","inspiration":"Inspiré ...","reflection":"..."}`,
+        "Tu selectionnes des citations existantes en francais, mot pour mot, sans les modifier. Reponds uniquement en JSON valide.",
+      input: `Trouve la citation du jour pour ${date}. Source a utiliser cette fois: ${sourceDirection}. Tu dois retourner une citation deja existante, mot pour mot, sans reformulation, sans adaptation et sans phrase inventee. La citation doit etre courte, motivante, introspective ou liee au bonheur, a la paix interieure, au courage, a la clarte ou a l'art de recommencer. Utilise uniquement des citations du domaine public, des proverbes connus ou des auteurs/personnages historiques anciens. Evite les citations issues de films, series, livres modernes ou oeuvres encore protegees. Le champ "quote" doit contenir seulement la citation exacte. Le champ "author" doit contenir l'auteur reel ou "Proverbe". Le champ "inspiration" doit indiquer "Citation de ...", "Citation attribuée à ..." ou "Proverbe ...". Le champ "reflection" peut contenir une courte phrase originale de contexte, mais ne doit pas modifier la citation. Retourne exactement ce JSON: {"quote":"...","author":"...","inspiration":"...","reflection":"..."}`,
       text: {
         format: {
           type: "json_object"

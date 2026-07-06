@@ -186,94 +186,109 @@ const riddleIdeas: DailyRiddle[] = [
 
 const localQuoteIdeas = [
   {
-    quote: "Chaque recommencement devient plus leger quand tu avances sans te juger.",
-    inspiration: "Inspiré de Nelson Mandela",
+    quote: "Connais-toi toi-même.",
+    author: "Socrate",
+    inspiration: "Citation attribuée à Socrate",
     reflection:
-      "La patience donne au courage le temps de devenir visible."
+      "Une phrase courte pour revenir a soi avant de chercher trop loin."
   },
   {
-    quote: "La paix commence parfois par une seule chose que tu acceptes de ne pas porter.",
-    inspiration: "Inspiré de la sagesse zen",
+    quote: "Le bonheur dépend de nous.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "Tout ne merite pas ton energie; certaines charges peuvent rester au sol."
+      "Elle rappelle que la joie se travaille aussi dans nos choix ordinaires."
   },
   {
-    quote: "Un pas sincere vaut mieux qu'une grande promesse fatiguee.",
-    inspiration: "Inspiré de Socrate",
+    quote: "Ce qui ne me tue pas me rend plus fort.",
+    author: "Friedrich Nietzsche",
+    inspiration: "Citation de Friedrich Nietzsche",
     reflection:
-      "Une question honnete peut remettre plus d'ordre qu'une certitude bruyante."
+      "Une pensee directe sur la resilience et la transformation par l'epreuve."
   },
   {
-    quote: "Ce que tu regardes avec calme cesse souvent de te gouverner.",
-    inspiration: "Inspiré du stoïcisme",
+    quote: "Il faut cultiver notre jardin.",
+    author: "Voltaire",
+    inspiration: "Citation de Voltaire",
     reflection:
-      "Reviens a ce qui depend de toi, puis laisse le reste perdre son poids."
+      "Une invitation a revenir au concret, au soin et a l'action utile."
   },
   {
-    quote: "La force tranquille consiste a continuer sans perdre ta douceur.",
-    inspiration: "Inspiré de Forrest Gump",
+    quote: "Ose savoir !",
+    author: "Emmanuel Kant",
+    inspiration: "Citation d'Emmanuel Kant",
     reflection:
-      "La simplicite peut etre une forme solide de courage."
+      "Une formule breve pour encourager la lucidite et l'autonomie."
   },
   {
-    quote: "Ce qui passe ne t'enleve pas tout: parfois, cela te rend plus libre.",
-    inspiration: "Inspiré d'une sagesse persane",
+    quote: "Aide-toi, le ciel t'aidera.",
+    author: "Jean de La Fontaine",
+    inspiration: "Citation de Jean de La Fontaine",
     reflection:
-      "Une emotion traverse mieux quand tu ne l'attaches pas a ton identite."
+      "Elle valorise l'initiative, meme quand le resultat semble encore loin."
   },
   {
-    quote: "Le chemin devient plus clair quand tu avances avec ce que tu as, pas avec ce qui manque.",
-    inspiration: "Inspiré du Seigneur des anneaux",
+    quote: "Rien ne sert de courir; il faut partir à point.",
+    author: "Jean de La Fontaine",
+    inspiration: "Citation de Jean de La Fontaine",
     reflection:
-      "Les grands trajets commencent souvent avec des moyens simples et une decision calme."
+      "Un rappel simple: la regularite peut valoir mieux que la precipitation."
   },
   {
-    quote: "Avancer, ce n'est pas tout comprendre: c'est refuser de laisser la peur conduire seule.",
-    inspiration: "Inspiré de Matrix",
+    quote: "Un voyage de mille lieues commence toujours par un premier pas.",
+    author: "Lao Tseu",
+    inspiration: "Citation attribuée à Lao Tseu",
     reflection:
-      "La lucidite commence quand tu oses regarder ce qui t'endort."
+      "Elle remet les grands objectifs a la taille du prochain geste."
   },
   {
-    quote: "La joie ne demande pas toujours plus; parfois elle demande seulement d'etre la.",
-    inspiration: "Inspiré d'Amelie Poulain",
+    quote: "La simplicité est la sophistication suprême.",
+    author: "Léonard de Vinci",
+    inspiration: "Citation attribuée à Léonard de Vinci",
     reflection:
-      "Un detail simple peut rouvrir la journee quand tu l'accueilles vraiment."
+      "Une phrase utile pour chercher la justesse plutot que l'exces."
   },
   {
-    quote: "Ce que tu choisis de nourrir finit par dessiner ton horizon.",
-    inspiration: "Inspiré d'un proverbe populaire",
+    quote: "Tout ce que je sais, c'est que je ne sais rien.",
+    author: "Socrate",
+    inspiration: "Citation attribuée à Socrate",
     reflection:
-      "Ton attention est une forme de jardin: elle fait grandir ce qu'elle visite souvent."
+      "Une bonne porte d'entree vers l'humilite et l'apprentissage."
   },
   {
-    quote: "Le courage n'est pas l'absence de peur; c'est une main posee sur elle pour continuer.",
-    inspiration: "Inspiré de Maya Angelou",
+    quote: "La vie est un sommeil, l'amour en est le rêve.",
+    author: "Alfred de Musset",
+    inspiration: "Citation d'Alfred de Musset",
     reflection:
-      "Tu peux avancer avec la peur sans lui donner toute la direction."
+      "Une phrase poetique pour garder une place a la douceur."
   },
   {
-    quote: "Un esprit qui respire trouve parfois une porte la ou il ne voyait qu'un mur.",
-    inspiration: "Inspiré d'un proverbe japonais",
+    quote: "Le doute est le commencement de la sagesse.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "La patience ne ralentit pas toujours: parfois elle evite de forcer la mauvaise serrure."
+      "Elle transforme l'incertitude en point de depart, pas en faiblesse."
   },
   {
-    quote: "La lumiere revient souvent par les gestes qu'on croyait trop petits.",
-    inspiration: "Inspiré de Victor Hugo",
+    quote: "La patience est amère, mais son fruit est doux.",
+    author: "Jean-Jacques Rousseau",
+    inspiration: "Citation attribuée à Jean-Jacques Rousseau",
     reflection:
-      "Ne meprise pas le petit bien accompli aujourd'hui."
+      "Elle encourage a tenir sans confondre lenteur et immobilite."
   },
   {
-    quote: "Une equipe avance mieux quand chacun apporte sa lumiere sans eteindre celle des autres.",
-    inspiration: "Inspiré de Ted Lasso",
+    quote: "Il n'y a point de génie sans un grain de folie.",
+    author: "Aristote",
+    inspiration: "Citation attribuée à Aristote",
     reflection:
-      "La bonne humeur devient serieuse quand elle aide les autres a tenir debout."
+      "Une phrase pour laisser un peu de place a l'audace."
   },
   {
-    quote: "Retrouver sa place commence parfois par arreter de fuir son propre nom.",
-    inspiration: "Inspiré du Roi Lion",
+    quote: "Science sans conscience n'est que ruine de l'âme.",
+    author: "François Rabelais",
+    inspiration: "Citation de François Rabelais",
     reflection:
-      "Ce que tu assumes avec calme cesse de courir derriere toi."
+      "Un rappel a relier competence, responsabilite et humanite."
   }
 ];
 
