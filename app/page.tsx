@@ -1,213 +1,23 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  DailyQuote,
+  DailyRiddle,
+  PublicContent,
+  StoredAnswer,
+  fallbackQuoteFor,
+  riddleCycleKey,
+  riddleFor
+} from "./lib/kimia";
 
-type DailyQuote = {
-  quote: string;
-  author: string;
-  reflection: string;
-  inspiration: string;
-  date: string;
-  source: "openai" | "fallback";
-};
-
-type StoredAnswer = {
-  pseudo: string;
-  answer: string;
-  cycleKey: string;
-  question: string;
-  submittedAt: string;
-};
-
-type DailyRiddle = {
-  question: string;
-  answer: string;
-  inspiration: string;
-};
-
-const fallbackQuote: DailyQuote = {
-  quote: "On avance mieux quand le tresor cherche devient une facon de regarder.",
-  author: "KIMIA",
-  inspiration: "Inspiré de l'Alchimiste",
-  reflection:
-    "Reste attentif au chemin: il sait parfois parler avant l'arrivee.",
-  date: new Date().toISOString().slice(0, 10),
-  source: "fallback"
-};
-
-const riddleBank = [
-  {
-    question:
-      "Dans Le Seigneur des anneaux, je suis minuscule, je brille, et je transforme tout le monde en mauvais collegue. Qui suis-je ?",
-    answer: "L'anneau",
-    inspiration: "Le Seigneur des anneaux"
-  },
-  {
-    question:
-      "Dans Matrix, je suis rouge ou bleue, mais je ne soigne aucun rhume. Je change juste ta facon de voir le monde. Qui suis-je ?",
-    answer: "La pilule",
-    inspiration: "Matrix"
-  },
-  {
-    question:
-      "Dans Harry Potter, je ne suis pas un plan RH, mais je choisis ta maison et parfois ton ego. Qui suis-je ?",
-    answer: "Le Choixpeau",
-    inspiration: "Harry Potter"
-  },
-  {
-    question:
-      "Dans Star Wars, je suis partout, mais impossible de me mettre en bouteille pour la pause cafe. Qui suis-je ?",
-    answer: "La Force",
-    inspiration: "Star Wars"
-  },
-  {
-    question:
-      "Dans Le Roi Lion, je veux dire: respire, avance, et arrete de ruminer comme si c'etait un metier. Qui suis-je ?",
-    answer: "Hakuna Matata",
-    inspiration: "Le Roi Lion"
-  },
-  {
-    question:
-      "Dans Inside Out, je prouve qu'une larme peut parfois faire mieux qu'un grand sourire force. Qui suis-je ?",
-    answer: "La tristesse",
-    inspiration: "Inside Out"
-  },
-  {
-    question:
-      "Dans Ted Lasso, je ressemble a un mot simple sur un panneau, mais je fais courir l'espoir plus vite qu'un coach. Qui suis-je ?",
-    answer: "Believe",
-    inspiration: "Ted Lasso"
-  },
-  {
-    question:
-      "Dans Toy Story, je suis une mission immense, meme quand on part d'une chambre d'enfant. Qui suis-je ?",
-    answer: "Vers l'infini et au-dela",
-    inspiration: "Toy Story"
-  },
-  {
-    question:
-      "Chez Socrate, je commence souvent par dire 'je ne sais pas', ce qui est pratique quand on n'a pas revise. Qui suis-je ?",
-    answer: "La sagesse",
-    inspiration: "Socrate"
-  },
-  {
-    question:
-      "Dans la culture japonaise, je repare les fissures avec de l'or au lieu de faire semblant qu'elles n'existent pas. Qui suis-je ?",
-    answer: "Le kintsugi",
-    inspiration: "Culture japonaise"
-  },
-  {
-    question:
-      "Avec Nelson Mandela, je demande du temps, du calme et une tete dure, mais je finis par ouvrir les portes. Qui suis-je ?",
-    answer: "La perseverance",
-    inspiration: "Nelson Mandela"
-  },
-  {
-    question:
-      "Chez les stoiciens, je ne controle ni la meteo ni les collegues, mais je peux controler ma réponse. Qui suis-je ?",
-    answer: "Le jugement",
-    inspiration: "Stoicisme"
-  }
-];
-
-const ADMIN_QUOTE_KEY = "kimia-admin-selected-quote";
-const ADMIN_RIDDLE_KEY = "kimia-admin-selected-riddle";
-
-function localDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function riddleCycleKey(date: Date) {
-  const cycleDate = new Date(date);
-
-  if (date.getHours() < 23) {
-    cycleDate.setDate(cycleDate.getDate() - 1);
-  }
-
-  return localDateKey(cycleDate);
-}
-
-function riddleFor(cycleKey: string) {
-  const seed = [...cycleKey].reduce((sum, character) => sum + character.charCodeAt(0), 0);
-  return riddleBank[seed % riddleBank.length];
-}
-
-function normalizeText(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9 ]/g, " ")
-    .replace(/\b(le|la|les|un|une|des|l)\b/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function wordSet(value: string) {
-  return new Set(normalizeText(value).split(" ").filter((word) => word.length > 2));
-}
-
-function levenshteinDistance(left: string, right: string) {
-  const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
-
-  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
-    let lastDiagonal = previous[0];
-    previous[0] = leftIndex;
-
-    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
-      const insertion = previous[rightIndex] + 1;
-      const deletion = previous[rightIndex - 1] + 1;
-      const substitution = lastDiagonal + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1);
-
-      lastDiagonal = previous[rightIndex];
-      previous[rightIndex] = Math.min(insertion, deletion, substitution);
-    }
-  }
-
-  return previous[right.length];
-}
-
-function similarity(left: string, right: string) {
-  const longest = Math.max(left.length, right.length);
-
-  if (longest === 0) {
-    return 1;
-  }
-
-  return 1 - levenshteinDistance(left, right) / longest;
-}
-
-function isCorrectAnswer(userAnswer: string, expectedAnswer: string) {
-  const user = normalizeText(userAnswer);
-  const expected = normalizeText(expectedAnswer);
-
-  if (user.length < 3 || expected.length < 3) {
-    return false;
-  }
-
-  if (user === expected || user.includes(expected) || expected.includes(user)) {
-    return true;
-  }
-
-  const userWords = wordSet(user);
-  const expectedWords = wordSet(expected);
-  const sharedWords = [...expectedWords].filter((word) => userWords.has(word));
-
-  if (expectedWords.size > 0 && sharedWords.length / expectedWords.size >= 0.6) {
-    return true;
-  }
-
-  return similarity(user, expected) >= 0.72;
-}
+const initialCycleKey = riddleCycleKey(new Date());
+const initialFallbackQuote = fallbackQuoteFor(initialCycleKey);
+const initialFallbackRiddle = riddleFor(initialCycleKey);
 
 export default function Home() {
-  const [quote, setQuote] = useState<DailyQuote>(fallbackQuote);
-  const [adminQuote, setAdminQuote] = useState<DailyQuote | null>(null);
-  const [adminRiddle, setAdminRiddle] = useState<DailyRiddle | null>(null);
+  const [quote, setQuote] = useState<DailyQuote>(initialFallbackQuote);
+  const [riddle, setRiddle] = useState<DailyRiddle>(initialFallbackRiddle);
   const [now, setNow] = useState(() => new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -216,10 +26,10 @@ export default function Home() {
   const [pseudo, setPseudo] = useState("");
   const [answer, setAnswer] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [storedAnswers, setStoredAnswers] = useState<StoredAnswer[]>([]);
+  const [dbWinningAnswer, setDbWinningAnswer] = useState<StoredAnswer | null>(null);
   const [demoWinner, setDemoWinner] = useState<string | null>(null);
 
-  const displayedQuote = adminQuote ?? quote;
+  const displayedQuote = quote;
 
   const formattedDate = useMemo(() => {
     return new Intl.DateTimeFormat("fr-FR", {
@@ -231,15 +41,10 @@ export default function Home() {
   }, [displayedQuote.date]);
 
   const cycleKey = useMemo(() => riddleCycleKey(now), [now]);
-  const automaticRiddle = useMemo(() => riddleFor(cycleKey), [cycleKey]);
-  const riddle = adminRiddle ?? automaticRiddle;
-  const answersStorageKey = `kimia-riddle-answers-v4-${cycleKey}`;
   const isQuestionPhase = now.getHours() >= 23 || now.getHours() < 13;
   const winningAnswer = useMemo(() => {
-    const storedWinner = storedAnswers.find((entry) => isCorrectAnswer(entry.answer, riddle.answer));
-
-    if (storedWinner) {
-      return storedWinner;
+    if (dbWinningAnswer) {
+      return dbWinningAnswer;
     }
 
     if (!demoWinner) {
@@ -253,7 +58,7 @@ export default function Home() {
       question: riddle.question,
       submittedAt: new Date().toISOString()
     };
-  }, [cycleKey, demoWinner, riddle.answer, riddle.question, storedAnswers]);
+  }, [cycleKey, dbWinningAnswer, demoWinner, riddle.answer, riddle.question]);
   const hasCorrectAnswer = Boolean(winningAnswer);
   const bubbleState = isQuestionPhase ? "question" : hasCorrectAnswer ? "found" : "missed";
   const bubbleIcon = isQuestionPhase ? "?" : hasCorrectAnswer ? "👍" : "😕";
@@ -263,12 +68,9 @@ export default function Home() {
       ? "Réponse trouvée"
       : "Réponse non trouvée";
   const quoteWords = useMemo(() => {
-    const text =
-      isLoading && !adminQuote
-        ? "Une pensee prend forme pour commencer la journee."
-        : displayedQuote.quote;
+    const text = isLoading ? "Une pensee prend forme pour commencer la journee." : displayedQuote.quote;
     return text.split(" ");
-  }, [adminQuote, displayedQuote.quote, isLoading]);
+  }, [displayedQuote.quote, isLoading]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -279,63 +81,26 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const savedQuote = window.localStorage.getItem(ADMIN_QUOTE_KEY);
-    const savedRiddle = window.localStorage.getItem(ADMIN_RIDDLE_KEY);
-
-    if (savedQuote) {
-      setAdminQuote(JSON.parse(savedQuote) as DailyQuote);
-    }
-
-    if (savedRiddle) {
-      setAdminRiddle(JSON.parse(savedRiddle) as DailyRiddle);
-    }
-  }, []);
-
-  useEffect(() => {
     const winner = new URLSearchParams(window.location.search).get("demoWinner")?.trim();
     setDemoWinner(winner || null);
   }, []);
 
   useEffect(() => {
-    const savedAnswers = window.localStorage.getItem(answersStorageKey);
+    setIsLoading(true);
+    setError(null);
 
-    if (savedAnswers) {
-      setStoredAnswers(JSON.parse(savedAnswers) as StoredAnswer[]);
-    } else {
-      setStoredAnswers([]);
-    }
-
-    Object.keys(window.localStorage)
-      .filter((key) => key.startsWith("kimia-riddle-answers-") && key !== answersStorageKey)
-      .forEach((key) => window.localStorage.removeItem(key));
-  }, [answersStorageKey]);
-
-  useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    const cacheKey = `kimia-daily-quote-v4-${today}`;
-    const cachedQuote = window.localStorage.getItem(cacheKey);
-
-    Object.keys(window.localStorage)
-      .filter((key) => key.startsWith("kimia-daily-quote-") && key !== cacheKey)
-      .forEach((key) => window.localStorage.removeItem(key));
-
-    if (cachedQuote) {
-      setQuote(JSON.parse(cachedQuote) as DailyQuote);
-      setIsLoading(false);
-      return;
-    }
-
-    fetch("/api/quote", { cache: "no-store" })
+    fetch(`/api/content?cycleKey=${encodeURIComponent(cycleKey)}`, { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error("La citation du jour n'a pas pu etre chargee.");
+          throw new Error("Le contenu du jour n'a pas pu etre charge.");
         }
 
-        return (await response.json()) as DailyQuote;
+        return (await response.json()) as PublicContent;
       })
-      .then((dailyQuote) => {
-        setQuote(dailyQuote);
-        window.localStorage.setItem(cacheKey, JSON.stringify(dailyQuote));
+      .then((dailyContent) => {
+        setQuote(dailyContent.quote);
+        setRiddle(dailyContent.riddle);
+        setDbWinningAnswer(dailyContent.winningAnswer);
       })
       .catch((requestError: Error) => {
         setError(requestError.message);
@@ -343,7 +108,7 @@ export default function Home() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [cycleKey]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -376,31 +141,44 @@ export default function Home() {
     setIsQuestionOpen(false);
   }
 
-  function submitAnswer(event: FormEvent<HTMLFormElement>) {
+  async function submitAnswer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!pseudo.trim() || !answer.trim()) {
       return;
     }
 
-    const nextAnswers = [
-      ...storedAnswers,
-      {
-        pseudo: pseudo.trim(),
-        answer: answer.trim(),
-        cycleKey,
-        question: riddle.question,
-        submittedAt: new Date().toISOString()
+    try {
+      const response = await fetch("/api/answers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cycleKey,
+          pseudo: pseudo.trim(),
+          answer: answer.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("La reponse n'a pas pu etre enregistree.");
       }
-    ];
 
-    // TODO: Replace this local prototype with a POST to the answers backend.
-    window.localStorage.setItem(answersStorageKey, JSON.stringify(nextAnswers));
-    setStoredAnswers(nextAnswers);
+      const result = (await response.json()) as {
+        content: PublicContent;
+        isCorrect: boolean;
+      };
 
-    setPseudo("");
-    setAnswer("");
-    setHasSubmitted(true);
+      setQuote(result.content.quote);
+      setRiddle(result.content.riddle);
+      setDbWinningAnswer(result.content.winningAnswer);
+      setPseudo("");
+      setAnswer("");
+      setHasSubmitted(true);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Erreur d'envoi.");
+    }
   }
 
   return (
@@ -414,7 +192,7 @@ export default function Home() {
         <article className="quote-card">
           <p className="date-label">{formattedDate}</p>
 
-          <blockquote className={isLoading && !adminQuote ? "quote loading" : "quote"}>
+          <blockquote className={isLoading ? "quote loading" : "quote"}>
             <span aria-hidden="true" className="quote-mark">
               “
             </span>
@@ -437,7 +215,7 @@ export default function Home() {
 
           <div className="author-row">
             <span />
-            <p>KIMIA</p>
+            <p>{displayedQuote.author}</p>
             <span />
           </div>
           <p className="inspiration-label">{displayedQuote.inspiration}</p>

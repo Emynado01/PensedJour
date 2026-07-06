@@ -1,31 +1,15 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { DailyQuote, DailyRiddle, PublicContent, riddleCycleKey } from "../lib/kimia";
 
-type DailyQuote = {
-  quote: string;
-  author: string;
-  reflection: string;
-  inspiration: string;
-  date: string;
-  source: "openai" | "fallback";
-};
-
-type DailyRiddle = {
-  question: string;
-  answer: string;
-  inspiration: string;
-};
-
-const ADMIN_QUOTE_KEY = "kimia-admin-selected-quote";
-const ADMIN_RIDDLE_KEY = "kimia-admin-selected-riddle";
 const ADMIN_RECENT_RIDDLES_KEY = "kimia-admin-recent-riddles";
 
 const defaultQuote: DailyQuote = {
-  quote: "Le calme revient quand tu choisis le prochain geste juste.",
-  author: "KIMIA",
-  reflection: "Une pensee simple pour remettre de la clarte dans la journee.",
-  inspiration: "Inspiré de la sagesse stoïcienne",
+  quote: "Connais-toi toi-même.",
+  author: "Socrate",
+  reflection: "Une phrase courte pour revenir a soi avant de chercher trop loin.",
+  inspiration: "Citation attribuée à Socrate",
   date: new Date().toISOString().slice(0, 10),
   source: "fallback"
 };
@@ -332,29 +316,34 @@ function nextRiddle(currentQuestion: string) {
 }
 
 export default function AdminPage() {
+  const [cycleKey] = useState(() => riddleCycleKey(new Date()));
   const [quoteDraft, setQuoteDraft] = useState<DailyQuote>(defaultQuote);
   const [riddleDraft, setRiddleDraft] = useState<DailyRiddle>(defaultRiddle);
   const [selectedQuote, setSelectedQuote] = useState<DailyQuote | null>(null);
   const [selectedRiddle, setSelectedRiddle] = useState<DailyRiddle | null>(null);
-  const [status, setStatus] = useState("Admin local pret.");
+  const [status, setStatus] = useState("Connexion au contenu global...");
   const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
 
   useEffect(() => {
-    const storedQuote = window.localStorage.getItem(ADMIN_QUOTE_KEY);
-    const storedRiddle = window.localStorage.getItem(ADMIN_RIDDLE_KEY);
+    fetch(`/api/content?cycleKey=${encodeURIComponent(cycleKey)}`, { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Contenu global indisponible.");
+        }
 
-    if (storedQuote) {
-      const parsed = JSON.parse(storedQuote) as DailyQuote;
-      setSelectedQuote(parsed);
-      setQuoteDraft(parsed);
-    }
-
-    if (storedRiddle) {
-      const parsed = JSON.parse(storedRiddle) as DailyRiddle;
-      setSelectedRiddle(parsed);
-      setRiddleDraft(parsed);
-    }
-  }, []);
+        return (await response.json()) as PublicContent;
+      })
+      .then((content) => {
+        setQuoteDraft(content.quote);
+        setRiddleDraft(content.riddle);
+        setSelectedQuote(content.quote);
+        setSelectedRiddle(content.riddle);
+        setStatus("Contenu global charge depuis Neon.");
+      })
+      .catch((error: Error) => {
+        setStatus(error.message);
+      });
+  }, [cycleKey]);
 
   async function generateQuote() {
     setIsGeneratingQuote(true);
@@ -387,26 +376,71 @@ export default function AdminPage() {
     setStatus("Devinette generee. Tu peux la modifier avant selection.");
   }
 
-  function selectQuote(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    window.localStorage.setItem(ADMIN_QUOTE_KEY, JSON.stringify(quoteDraft));
-    setSelectedQuote(quoteDraft);
-    setStatus("Citation selectionnee pour cet appareil.");
+  async function saveGlobalContent(nextQuote: DailyQuote, nextRiddle: DailyRiddle) {
+    const response = await fetch("/api/content", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        cycleKey,
+        quote: nextQuote,
+        riddle: nextRiddle
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Sauvegarde Neon impossible.");
+    }
+
+    return (await response.json()) as PublicContent;
   }
 
-  function selectRiddle(event: FormEvent<HTMLFormElement>) {
+  async function selectQuote(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    window.localStorage.setItem(ADMIN_RIDDLE_KEY, JSON.stringify(riddleDraft));
-    setSelectedRiddle(riddleDraft);
-    setStatus("Question selectionnee pour cet appareil.");
+
+    try {
+      const content = await saveGlobalContent(quoteDraft, riddleDraft);
+      setSelectedQuote(content.quote);
+      setSelectedRiddle(content.riddle);
+      setStatus("Citation sauvegardee globalement dans Neon.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Erreur de sauvegarde.");
+    }
   }
 
-  function clearSelection() {
-    window.localStorage.removeItem(ADMIN_QUOTE_KEY);
-    window.localStorage.removeItem(ADMIN_RIDDLE_KEY);
-    setSelectedQuote(null);
-    setSelectedRiddle(null);
-    setStatus("Selection manuelle retiree. Le cycle automatique reprend.");
+  async function selectRiddle(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+      const content = await saveGlobalContent(quoteDraft, riddleDraft);
+      setSelectedQuote(content.quote);
+      setSelectedRiddle(content.riddle);
+      setStatus("Question sauvegardee globalement dans Neon.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Erreur de sauvegarde.");
+    }
+  }
+
+  async function clearSelection() {
+    try {
+      const response = await fetch(`/api/content?cycleKey=${encodeURIComponent(cycleKey)}`, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) {
+        throw new Error("Reset Neon impossible.");
+      }
+
+      const content = (await response.json()) as PublicContent;
+      setQuoteDraft(content.quote);
+      setRiddleDraft(content.riddle);
+      setSelectedQuote(content.quote);
+      setSelectedRiddle(content.riddle);
+      setStatus("Cycle reinitialise globalement dans Neon.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Erreur de reset.");
+    }
   }
 
   return (
@@ -415,9 +449,9 @@ export default function AdminPage() {
         <p className="admin-kicker">KIMIA Admin</p>
         <h1>Gestion des citations et devinettes</h1>
         <p>
-          Page cachee pour generer, modifier et selectionner le contenu affiche sur
-          la page publique. Sans selection manuelle, les mises a jour automatiques
-          gardent leur rythme habituel.
+          Page cachee pour generer, modifier et selectionner le contenu global
+          affiche sur la page publique. Les choix sont sauvegardes dans Neon et
+          deviennent communs a tous les navigateurs.
         </p>
       </section>
 
@@ -448,6 +482,14 @@ export default function AdminPage() {
               onChange={(event) =>
                 setQuoteDraft({ ...quoteDraft, inspiration: event.target.value })
               }
+            />
+          </label>
+
+          <label>
+            Auteur
+            <input
+              value={quoteDraft.author}
+              onChange={(event) => setQuoteDraft({ ...quoteDraft, author: event.target.value })}
             />
           </label>
 
